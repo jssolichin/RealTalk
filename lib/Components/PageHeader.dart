@@ -1,49 +1,69 @@
 import 'package:flutter/material.dart';
 
-import 'Carousel.dart';
+import '../Animations/PageEnterAnimation.dart';
 import '../styles.dart';
+import 'Carousel.dart';
 
 class PageHeader extends StatelessWidget {
 
-  Widget _getGradient(BuildContext context) {
-    return new Container(
-        height: 500.0,
-        decoration: new BoxDecoration(
-            gradient: new LinearGradient(
-              colors: <Color>[QTheme
-                  .of(context)
-                  .homeColor, new Color(0x0000A3FF)
-              ],
-              stops: [0.0, 1.0],
-              begin: const FractionalOffset(0.0, 0.0),
-              end: const FractionalOffset(0.0, 1.0),
-            )));
-  }
+  final PageEnterAnimation _animation;
+  final Color _color;
+  final String _title;
+
+  PageHeader({
+    PageEnterAnimation animation,
+    Color color,
+    String title,
+  }) : _animation = animation, _color = color, _title = title;
 
   Widget _getText(BuildContext context) {
     return new Padding(
       padding: const EdgeInsets.fromLTRB(40.0, 70.0, 40.0, 20.0),
       child:
-      new Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            new Text("Question of the Day", style: QTheme
-                .of(context)
-                .pageHeader)
-          ]
+      new Transform(
+          transform: new Matrix4.translationValues(
+            0.0,
+            _animation.pageHeaderYTranslation.value,
+            0.0,
+          ),
+          child: new Opacity (
+              opacity: _animation.pageHeaderOpacity.value,
+              child: new Text(
+//                  "Question of the Day",
+                  _title,
+                  style: QTheme
+                      .of(context)
+                      .pageHeader
+              )
+          )
       ),
+    );
+  }
+
+  Widget _getCarousel() {
+    return new Transform(
+        transform: new Matrix4.translationValues(
+          0.0,
+          _animation.carouselYTranslation.value,
+          0.0,
+        ),
+        child: new Opacity (
+            opacity: _animation.carouselOpacity.value,
+            child: new QuestionCarousel()
+        )
     );
   }
 
   @override
   Widget build(BuildContext context) {
+
     return new Stack(children: <Widget>[
 //      _getBackground(),
-      _getGradient(context),
+//      _getGradient(context),
       new Column(
         children: <Widget>[
           _getText(context),
-          new QuestionCarousel(),
+          _getCarousel(),
         ],
       ),
     ]);

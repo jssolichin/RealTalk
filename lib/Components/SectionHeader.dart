@@ -2,10 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../styles.dart';
 
-class SectionHeader extends StatelessWidget {
-  SectionHeader(this.title);
 
+import '../Animations/PageEnterAnimation.dart';
+
+class SectionHeader extends StatelessWidget {
+
+  final PageEnterAnimation _animation;
   final String title;
+
+  SectionHeader({
+    String text,
+    PageEnterAnimation animation,
+  }) : _animation = animation, title = text;
 
   @override
   Widget build(BuildContext context) {

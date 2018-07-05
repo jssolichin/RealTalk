@@ -5,9 +5,11 @@ import 'BookmarkIcon.dart';
 class QuestionCard extends StatelessWidget {
 
   int content;
+  double resizeFactor;
 
-  QuestionCard(int content) {
+  QuestionCard(int content, double resizeFactor) {
     this.content = content;
+    this.resizeFactor = resizeFactor;
   }
 
   Widget _questionCardContent(BuildContext context) {
@@ -23,7 +25,7 @@ class QuestionCard extends StatelessWidget {
                   margin: new EdgeInsets.only(right: 20.0),
                   child: new Text(
                     "${content} If you find out you were immortal, what would be the first thing you do?",
-                    style: theme.mainQuestion,
+                    style: QTheme.questionFont(QTheme.defaultMainQuestionSize * resizeFactor),
                   ))
             ]));
   }

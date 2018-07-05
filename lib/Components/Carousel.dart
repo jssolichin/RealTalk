@@ -51,7 +51,7 @@ class _QuestionCarouselPagerState extends State<QuestionCarousel> {
 
       pages.add(
           _contentWidget(
-            new QuestionCard(index),
+            new QuestionCard(index, resizeFactor),
             alignment,
             resizeFactor,
           )

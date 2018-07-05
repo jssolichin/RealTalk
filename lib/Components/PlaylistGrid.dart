@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+
+import '../Animations/PageEnterAnimation.dart';
 import '../styles.dart';
 
 class PlaylistGrid extends StatelessWidget {
+
+  final PageEnterAnimation _animation;
+
+  PlaylistGrid({
+    PageEnterAnimation animation,
+  }) : _animation = animation;
+
   Widget _buildPlaylist(BuildContext context, String title) {
     return new Expanded(
         child: new Container(

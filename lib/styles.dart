@@ -21,6 +21,7 @@ class QTheme extends InheritedWidget {
       : assert(child != null),
         super(key: key, child: child);
 
+  static double defaultMainQuestionSize = 39.0;
   final Color homeColor = new Color(0xFFE545FF);
 
   final TextStyle pageHeader =
@@ -30,7 +31,9 @@ class QTheme extends InheritedWidget {
   final TextStyle playlistTitle =
       new QStyle.montserrat(18.0, new Color(0xFFFFFFFF));
 
-  final TextStyle mainQuestion = new QStyle.lato(39.0, new Color(0xFF333333));
+  final TextStyle mainQuestion = questionFont(defaultMainQuestionSize);
+
+  static TextStyle questionFont (size) => new QStyle.lato(size, new Color(0xFF333333));
 
   static QTheme of(BuildContext context) =>
       context.inheritFromWidgetOfExactType(QTheme);

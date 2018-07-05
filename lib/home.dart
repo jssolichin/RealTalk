@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'Page.dart';
 
 class MyAppHome extends StatefulWidget {
@@ -8,71 +9,15 @@ class MyAppHome extends StatefulWidget {
   MyAppHomeState createState() => new MyAppHomeState();
 }
 
-class CustomIcon extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final IconThemeData iconTheme = IconTheme.of(context);
-    return new Container(
-      margin: const EdgeInsets.all(4.0),
-      width: iconTheme.size - 8.0,
-      height: iconTheme.size - 8.0,
-      color: iconTheme.color,
-    );
-  }
-}
-
-class CustomCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Card(
-      child: new Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          const ListTile(
-            leading: const Icon(Icons.album),
-            title: const Text('The Enchanted Nightingale'),
-            subtitle:
-                const Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-          ),
-          new ButtonTheme.bar(
-            // make buttons use the appropriate styles for cards
-            child: new ButtonBar(
-              children: <Widget>[
-                new FlatButton(
-                  child: const Text('BUY TICKETS'),
-                  onPressed: () {/* ... */},
-                ),
-                new FlatButton(
-                  child: const Text('LISTEN'),
-                  onPressed: () {/* ... */},
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 enum AppBarBehavior { normal, pinned, floating, snapping }
 
 class NavigationIconView {
-  final Widget _icon;
-  final Color color;
-  final String _title;
-  final AnimationController controller;
-  final BottomNavigationBarItem item;
-
-  CurvedAnimation _animation;
-
   NavigationIconView({
     Widget icon,
     String title,
     Color color,
     TickerProvider vsync,
-  })
-      : _icon = icon,
+  })  : _icon = icon,
         color = color,
         _title = title,
         item = new BottomNavigationBarItem(
@@ -81,122 +26,54 @@ class NavigationIconView {
           backgroundColor: color,
         ),
         controller = new AnimationController(
-          duration: kThemeAnimationDuration,
+          duration: const Duration(milliseconds: 250),
           vsync: vsync,
         ) {
     _animation = new CurvedAnimation(
       parent: controller,
-      curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+      curve: const Interval(0.0, 1.0, curve: Curves.fastOutSlowIn),
     );
   }
 
-  FadeTransition transition(
-      BottomNavigationBarType type, BuildContext context) {
-    Color iconColor;
-    if (type == BottomNavigationBarType.shifting) {
-      iconColor = color;
-    } else {
-      final ThemeData themeData = Theme.of(context);
-      iconColor = themeData.brightness == Brightness.light
-          ? themeData.primaryColor
-          : themeData.accentColor;
-    }
+  final Widget _icon;
+  final Color color;
+  final String _title;
+  final AnimationController controller;
+  final BottomNavigationBarItem item;
+  var pageAnimator;
+  CurvedAnimation _animation;
+
+  Widget _getGradient(Color color) {
+    return new Container(
+        decoration: new BoxDecoration(
+            gradient: new LinearGradient(
+              colors: <Color>[new Color(0x0000A3FF), color],
+              stops: [0.0, 1.0],
+              begin: const FractionalOffset(0.0, 0.0),
+              end: const FractionalOffset(0.0, 1.0),
+            )));
+  }
+
+  Widget _buidPage(String title) {
+    pageAnimator = new PageAnimator(
+      title: title,
+      color: color,
+    );
+
+    return new Stack(
+        children: <Widget>[
+          _getGradient(color),
+          new SingleChildScrollView(
+            child: pageAnimator,
+          )
+        ]);
+  }
+
+  FadeTransition transition(BottomNavigationBarType type, BuildContext context) {
 
     return new FadeTransition(
       opacity: _animation,
-      child: new SlideTransition(
-          position: new Tween<Offset>(
-            begin: const Offset(0.0, 0.2), // Slightly down.
-            end: Offset.zero,
-          )
-              .animate(_animation),
-          child: new Column(
-            children: <Widget>[
-              new CustomCard(),
-              new IconTheme(
-                data: new IconThemeData(
-                  color: iconColor,
-                  size: 120.0,
-                ),
-                child: new Semantics(
-                  label: 'Placeholder for $_title tab',
-                  child: _icon,
-                ),
-              ),
-            ],
-          )),
-    );
-  }
-}
-
-const double unitSize = kToolbarHeight;
-
-class _HeadingLayout extends MultiChildLayoutDelegate {
-  _HeadingLayout();
-
-  static const String title = 'title';
-  static const String description = 'description';
-
-  @override
-  void performLayout(Size size) {
-    final double halfWidth = size.width / 2.0;
-    final double halfHeight = size.height;
-    const double margin = 0.0;
-
-    final double maxTitleWidth = halfWidth + unitSize - margin;
-    final BoxConstraints titleBoxConstraints =
-        new BoxConstraints(maxWidth: maxTitleWidth);
-    final Size titleSize = layoutChild(title, titleBoxConstraints);
-    final double titleX = 0.0;
-    final double titleY = halfHeight - titleSize.height;
-    positionChild(title, new Offset(titleX, titleY));
-
-    final double descriptionY = titleY + titleSize.height + margin;
-    positionChild(description, new Offset(titleX, descriptionY));
-  }
-
-  @override
-  bool shouldRelayout(_HeadingLayout oldDelegate) => false;
-}
-
-// A card that highlights the "featured" catalog item.
-class _Heading extends StatelessWidget {
-//  _Heading({ Key key, @required this.product })
-//      : assert(product != null),
-//        assert(product.featureTitle != null),
-//        assert(product.featureDescription != null),
-//        super(key: key);
-
-//  final Product product;
-
-  @override
-  Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-    return new MergeSemantics(
-      child: new SizedBox(
-        height: screenSize.width > screenSize.height
-            ? (screenSize.height - kToolbarHeight) * 10
-            : (screenSize.height - kToolbarHeight) * 100,
-        child: new Container(
-          child: new CustomMultiChildLayout(
-            delegate: new _HeadingLayout(),
-            children: <Widget>[
-              new LayoutId(
-                id: _HeadingLayout.title,
-                child: new Text(
-                  "HOME",
-//style: QTheme.of(context).MainQuestion,
-//                    style: theme.featureTitleStyle
-                ),
-              ),
-              new LayoutId(
-                id: _HeadingLayout.description,
-                child: new Text("Let's make a friend today"),
-              ),
-            ],
-          ),
-        ),
-      ),
+      child: _buidPage(_title),
     );
   }
 }
@@ -204,13 +81,12 @@ class _Heading extends StatelessWidget {
 class MyAppHomeState extends State<MyAppHome> with TickerProviderStateMixin {
   int _currentIndex = 0;
   final BottomNavigationBarType _type = BottomNavigationBarType.shifting;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
   List<NavigationIconView> _navigationViews;
 
   @override
   void initState() {
     super.initState();
+
     _navigationViews = <NavigationIconView>[
       new NavigationIconView(
         icon: const Icon(Icons.home),
@@ -247,12 +123,13 @@ class MyAppHomeState extends State<MyAppHome> with TickerProviderStateMixin {
     for (NavigationIconView view in _navigationViews)
       view.controller.addListener(_rebuild);
 
-    _navigationViews[_currentIndex].controller.value = 1.0;
+    _navigationViews[_currentIndex].controller.forward();
   }
 
   @override
   void dispose() {
-    for (NavigationIconView view in _navigationViews) view.controller.dispose();
+    for (NavigationIconView view in _navigationViews)
+      view.controller.dispose();
     super.dispose();
   }
 
@@ -268,7 +145,6 @@ class MyAppHomeState extends State<MyAppHome> with TickerProviderStateMixin {
     for (NavigationIconView view in _navigationViews)
       transitions.add(view.transition(_type, context));
 
-    // We want to have the newly animating (fading in) views on top.
     transitions.sort((FadeTransition a, FadeTransition b) {
       final Animation<double> aAnimation = a.opacity;
       final Animation<double> bAnimation = b.opacity;
@@ -280,6 +156,7 @@ class MyAppHomeState extends State<MyAppHome> with TickerProviderStateMixin {
     return new Stack(children: transitions);
   }
 
+  @override
   Widget build(BuildContext context) {
     final BottomNavigationBar botNavBar = new BottomNavigationBar(
       items: _navigationViews
@@ -291,25 +168,13 @@ class MyAppHomeState extends State<MyAppHome> with TickerProviderStateMixin {
         setState(() {
           _navigationViews[_currentIndex].controller.reverse();
           _currentIndex = index;
-          _navigationViews[_currentIndex].controller.forward();
+          _navigationViews[index].controller.forward();
         });
       },
     );
 
     return new Scaffold(
-//        appBar: new AppBar(
-//          title: new Text('Welcome to Flutter'),
-//        ),
-//        body: new Center(
-//            child: _buildTransitionsStack()
-//        ),
-      body: new SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 50.0),
-          child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                new Page(),
-              ])),
+      body: new Center(child: _buildTransitionsStack()),
       bottomNavigationBar: botNavBar,
     );
   }
