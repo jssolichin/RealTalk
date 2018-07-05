@@ -50,7 +50,7 @@ class PlaylistGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var rows = [];
+    var rows = List<Widget>();
 //
     for (var i = 0; i < 2; i = i + 2) {
       final p1 = _buildPlaylist(context, "This is a Playlist");
