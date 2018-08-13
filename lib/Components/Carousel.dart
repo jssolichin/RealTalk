@@ -6,6 +6,11 @@ const double _kViewportFraction = 0.75;
 
 
 class QuestionCarousel extends StatefulWidget {
+
+  final Function onBookmarkPressed;
+
+  QuestionCarousel({this.onBookmarkPressed});
+
   @override
   _QuestionCarouselPagerState createState() =>
       new _QuestionCarouselPagerState();
@@ -51,7 +56,11 @@ class _QuestionCarouselPagerState extends State<QuestionCarousel> {
 
       pages.add(
           _contentWidget(
-            new QuestionCard(index, resizeFactor),
+            new QuestionCard(
+                content: index,
+                resizeFactor: resizeFactor,
+                onBookmarkPressed: widget.onBookmarkPressed
+            ),
             alignment,
             resizeFactor,
           )
@@ -64,7 +73,7 @@ class _QuestionCarouselPagerState extends State<QuestionCarousel> {
   @override
   Widget build(BuildContext context) {
     return new Container(
-        height: 550.0,
+        height: 580.0,
         child: new Stack(
           children: <Widget>[
             new NotificationListener<ScrollNotification>(

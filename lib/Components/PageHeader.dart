@@ -9,11 +9,13 @@ class PageHeader extends StatelessWidget {
   final PageEnterAnimation _animation;
   final Color _color;
   final String _title;
+  final Function onBookmarkPressed;
 
   PageHeader({
     PageEnterAnimation animation,
     Color color,
     String title,
+    this.onBookmarkPressed,
   }) : _animation = animation, _color = color, _title = title;
 
   Widget _getText(BuildContext context) {
@@ -49,7 +51,9 @@ class PageHeader extends StatelessWidget {
         ),
         child: new Opacity (
             opacity: _animation.carouselOpacity.value,
-            child: new QuestionCarousel()
+            child: new QuestionCarousel(
+              onBookmarkPressed: onBookmarkPressed,
+            )
         )
     );
   }

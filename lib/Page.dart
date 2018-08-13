@@ -6,6 +6,7 @@ import 'Animations/PageEnterAnimation.dart';
 import 'Components/PageHeader.dart';
 import 'Components/PlaylistGrid.dart';
 import 'Components/SectionHeader.dart';
+import 'Components/BookmarkAnimation.dart';
 
 class PageAnimator extends StatefulWidget {
 
@@ -73,7 +74,12 @@ class Page extends StatelessWidget {
     String title,
   }) : _animation = new PageEnterAnimation(controller), _color = color, _title = title;
 
+  var bookmarkAnimationStateKey = GlobalKey<bookmarkAnimationState>();
+
   Widget _buildAnimation(BuildContext context, Widget child) {
+
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
 
     return new Stack(children: <Widget>[
       new Column(
@@ -81,6 +87,9 @@ class Page extends StatelessWidget {
         children: <Widget>[
           new PageHeader(
             animation: _animation,
+            onBookmarkPressed: (startPos) {
+              bookmarkAnimationStateKey.currentState.playAnimation(startPos);
+            },
             color: _color,
             title: _title
           ),
@@ -93,7 +102,14 @@ class Page extends StatelessWidget {
           ),
         ],
       ),
-
+      new Container(
+        width: width,
+        height: height,
+        child: new BookmarkAnimation(
+            key: bookmarkAnimationStateKey,
+          screenSize: MediaQuery.of(context).size
+        ),
+      ),
     ]);
   }
 

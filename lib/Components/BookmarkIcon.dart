@@ -19,6 +19,11 @@ class BookmarkClipper extends CustomClipper<Path> {
 }
 
 class BookmarkIcon extends StatefulWidget {
+
+  final Function onBookmarkPressed;
+
+  BookmarkIcon({this.onBookmarkPressed});
+
   @override
   _BookmarkIconState createState() => new _BookmarkIconState();
 }
@@ -60,6 +65,13 @@ class _BookmarkIconState extends State<BookmarkIcon> {
         onTap: () {
           this.setState((){
             _enabled = !_enabled;
+
+            RenderBox box = context.findRenderObject();
+            var _tapPos = box.localToGlobal(const Offset(0.0, 0.0));
+            if (_enabled) {
+              widget.onBookmarkPressed(_tapPos);
+            }
+
           });
         },
         child: icon(shadowColor, color),

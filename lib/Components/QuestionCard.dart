@@ -7,10 +7,13 @@ class QuestionCard extends StatelessWidget {
   int content;
   double resizeFactor;
 
-  QuestionCard(int content, double resizeFactor) {
-    this.content = content;
-    this.resizeFactor = resizeFactor;
-  }
+  final Function onBookmarkPressed;
+
+  QuestionCard({
+    this.content,
+    this.resizeFactor,
+    this.onBookmarkPressed
+  });
 
   Widget _questionCardContent(BuildContext context) {
     final QTheme theme = QTheme.of(context);
@@ -20,7 +23,9 @@ class QuestionCard extends StatelessWidget {
         child: new Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              new BookmarkIcon(),
+              new BookmarkIcon(
+                onBookmarkPressed: onBookmarkPressed,
+              ),
               new Container(
                   margin: new EdgeInsets.only(right: 20.0),
                   child: new Text(
