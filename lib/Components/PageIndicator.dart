@@ -34,10 +34,11 @@ class PageIndicator extends AnimatedWidget {
   static const double _kDotSpacing = 25.0;
 
   Widget _buildDot(int index) {
+
     double selectedness = Curves.easeOut.transform(
       math.max(
         0.0,
-        1.0 - ((controller.page ?? controller.initialPage) - index).abs(),
+        1.0 - ((controller.page ?? controller.initialPage ?? 0) - index).abs(),
       ),
     );
     double zoom = 1.0 + (_kMaxZoom - 1.0) * selectedness;

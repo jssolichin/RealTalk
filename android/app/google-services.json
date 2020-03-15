@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1040552937827",
+    "firebase_url": "https://realtalk-a4f45.firebaseio.com",
+    "project_id": "realtalk-a4f45",
+    "storage_bucket": "realtalk-a4f45.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040552937827:android:9c29dce4c54cc7e3",
+        "android_client_info": {
+          "package_name": "com.jssolichin.realtalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040552937827-58vp47ev14fr1iqeuv9tm6cvdnuigtmh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwyfMX8DvFIjO9Ub5jIAyZeQgCOlOQX_4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

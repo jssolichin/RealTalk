@@ -113,7 +113,17 @@ class MyAppHomeState extends State<MyAppHome> with TickerProviderStateMixin {
         vsync: this,
       ),
       new NavigationIconView(
-        icon: const Icon(Icons.star),
+        icon: new Stack(
+            children: <Widget>[
+              const Icon(Icons.star),
+              new Positioned(  // draw a red marble
+                top: 0.0,
+                right: 0.0,
+                child: new Icon(Icons.brightness_1, size: 8.0,
+                    color: Colors.black),
+              )
+            ]
+        ),
         title: 'Starred',
         color: Colors.pink,
         vsync: this,

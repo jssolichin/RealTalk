@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'dart:math';
 
@@ -85,20 +86,33 @@ class Page extends StatelessWidget {
       new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          new PageHeader(
-            animation: _animation,
-            onBookmarkPressed: (startPos) {
-              bookmarkAnimationStateKey.currentState.playAnimation(startPos);
-            },
-            color: _color,
-            title: _title
+          new StreamBuilder(
+            stream: Firestore.instance.collection('questions').snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return const Text('Loading...');
+              return new PageHeader(
+                animation: _animation,
+                onBookmarkPressed: (startPos) {
+                  bookmarkAnimationStateKey.currentState.playAnimation(startPos);
+                },
+                color: _color,
+                title: _title,
+                snapshot: snapshot,
+              );
+            }
           ),
           new SectionHeader(
               text: "Popular Playlist",
               animation: _animation
           ),
-          new PlaylistGrid(
-              animation: _animation
+          new StreamBuilder(
+            stream: Firestore.instance.collection('collections').snapshots(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (!snapshot.hasData) return const Text('Loading...');
+              return new PlaylistGrid(
+                snapshot: snapshot,
+              );
+            }
           ),
         ],
       ),

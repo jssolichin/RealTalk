@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../styles.dart';
 import 'BookmarkIcon.dart';
 
@@ -6,13 +8,15 @@ class QuestionCard extends StatelessWidget {
 
   int content;
   double resizeFactor;
+  DocumentSnapshot data;
 
   final Function onBookmarkPressed;
 
   QuestionCard({
     this.content,
     this.resizeFactor,
-    this.onBookmarkPressed
+    this.onBookmarkPressed,
+    this.data,
   });
 
   Widget _questionCardContent(BuildContext context) {
@@ -29,7 +33,8 @@ class QuestionCard extends StatelessWidget {
               new Container(
                   margin: new EdgeInsets.only(right: 20.0),
                   child: new Text(
-                    "${content} If you find out you were immortal, what would be the first thing you do?",
+                    "${data['value']}",
+//                    "${content} If you find out you were immortal, what would be the first thing you do?",
                     style: QTheme.questionFont(QTheme.defaultMainQuestionSize * resizeFactor),
                   ))
             ]));

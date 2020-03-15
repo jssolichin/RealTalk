@@ -1,17 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../Animations/PageEnterAnimation.dart';
 import '../styles.dart';
+import '../Page.dart';
 
 class PlaylistGrid extends StatelessWidget {
 
-  final PageEnterAnimation _animation;
+  final AsyncSnapshot snapshot;
 
   PlaylistGrid({
-    PageEnterAnimation animation,
-  }) : _animation = animation;
+    this.snapshot,
+  });
 
-  Widget _buildPlaylist(BuildContext context, String title) {
+
+  Widget _getGradient(Color color) {
+    return new Container(
+        decoration: new BoxDecoration(
+            gradient: new LinearGradient(
+              colors: <Color>[new Color(0x0000A3FF), color],
+              stops: [0.0, 1.0],
+              begin: const FractionalOffset(0.0, 0.0),
+              end: const FractionalOffset(0.0, 1.0),
+            )));
+  }
+
+  Widget _buidPage(String title) {
+    var color = new Color(0xFF24BD64);
+    var pageAnimator = new PageAnimator(
+      title: title,
+      color: color,
+    );
+
+    return new Stack(
+        children: <Widget>[
+          _getGradient(color),
+          new SingleChildScrollView(
+  child: new Text("hewllo"),
+//   child: pageAnimator,
+          )
+        ]);
+
+  }
+
+  Widget _buildPlaylist(BuildContext context, DocumentSnapshot snapshot) {
     return new Expanded(
         child: new Container(
             decoration: new BoxDecoration(
@@ -35,27 +66,55 @@ class PlaylistGrid extends StatelessWidget {
             padding: const EdgeInsets.all(20.0),
             child: new AspectRatio(
                 aspectRatio: 1.0,
-                child: new Container(
-                  child:
-                  new Text(title, style: QTheme.of(context).playlistTitle),
-                  alignment: AlignmentDirectional.bottomEnd,
-                ))));
+                child: new GestureDetector(
+                  onTap: () {
+                    print("TAPPED!");
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => _buidPage(snapshot['title']),
+                      ),
+                    );
+
+                  },
+                  child: new Container(
+                    child: new Text(snapshot['title'], style: QTheme.of(context).playlistTitle),
+                    alignment: AlignmentDirectional.bottomEnd,
+                  )
+                )
+            )
+        )
+    );
   }
 
-  Widget _buildRow(playlists) {
+  Widget _buildRow(List<Widget> playlists) {
     return new Row(
-      children: <Widget>[playlists[0], playlists[1]],
+      children: playlists,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    var length = snapshot.data.documents.length;
     var rows = List<Widget>();
-//
-    for (var i = 0; i < 2; i = i + 2) {
-      final p1 = _buildPlaylist(context, "This is a Playlist");
-      final p2 = _buildPlaylist(context, "This is a Playlist");
-      rows.add(_buildRow([p1, p2]));
+    var lastRow = List<Widget>();
+
+    for (var i = 0; i < length; i++) {
+      DocumentSnapshot document1 = snapshot.data.documents[i];
+
+      final p1 = _buildPlaylist(context, document1);
+
+      if (lastRow.length < 2) {
+        lastRow.add(p1);
+      } else {
+        rows.add(_buildRow(lastRow));
+        lastRow = [p1];
+      }
+    }
+
+    if (length % 2 != 0) {
+      rows.add(_buildRow(lastRow));
     }
 
     return new Container(
